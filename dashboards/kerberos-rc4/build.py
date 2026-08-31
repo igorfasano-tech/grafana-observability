@@ -21,6 +21,16 @@ SEL71  = '{job="$job", computer=~"$dc", event_id="4771"}'
 SELKDC = '{job="$job", computer=~"$dc", channel="System", event_id=~"20[1-9]"}'
 # Every event ID this dashboard knows about, used to scope the variables.
 KERB_IDS = "4768|4769|4771|20[1-9]"
+# Every worklist table below groups by three or four dimensions, and one of
+# them is always a client IP. On a real estate that is unbounded: Loki has to
+# build one series per distinct combination, and past max_query_series (500 by
+# default, not raisable on Grafana Cloud) the panel dies with "maximum of
+# series reached for a single query" and shows No data.
+#
+# topk() caps the series count and costs nothing here, because a worklist is
+# read top-down anyway. Anybody with more than 200 distinct offenders is not
+# going to work through row 201 today.
+TABLE_LIMIT = 200
 # 205 is a start-up configuration finding, not a per-request warning, and it
 # gets its own stat. Keeping it out of here stops it double-counting.
 KDC_WARN  = '{job="$job", computer=~"$dc", channel="System", event_id=~"201|202|206|207"}'
@@ -68,8 +78,15 @@ def tgt(expr, ref="A", instant=False, legend=""):
         t["legendFormat"] = legend
     return t
 
+# color_mode defaults to "value": a dark tile with a coloured number.
+#
+# Grafana's other option, "background", paints the whole tile in the threshold
+# colour. That works for red and orange, and falls apart for the neutral steps
+# used by the counters here: a "text" coloured background renders as a washed
+# pale lavender block in the dark theme, so half the stat row looks like a
+# different dashboard. Colour the number, not the tile.
 def stat(pid, title, desc, expr, x, y, w=4, h=4, steps=None, unit="none", dec=0,
-         no_value=None, color_mode="background"):
+         no_value=None, color_mode="value"):
     # no_value matters wherever "no events" and "zero events" mean different things.
     # Left alone, an absent series takes the base threshold colour, so a panel with
     # nothing behind it renders as a green all-clear. See NODATA below.
@@ -310,7 +327,7 @@ P.append(row(1001, "\U0001F511 Service Accounts and Key Material", 16))
 P.append(table(301, "Services Without AES Key Material - Remediation Worklist",
     "One row equals one account to fix. Available Keys with no AES entry means the account cannot negotiate AES at all. "
     "Remediation is a password reset to generate AES keys, then msDS-SupportedEncryptionTypes = 24. An empty table is the healthy state.",
-    'sum by (service, svc_keys, svc_set) (count_over_time(' + q(SEL, "ServiceAvailableKeys", ["svc_keys", "svc_set", "service"], NO_AES) + ' [$__range]))',
+    'topk(' + str(TABLE_LIMIT) + ', sum by (service, svc_keys, svc_set) (count_over_time(' + q(SEL, "ServiceAvailableKeys", ["svc_keys", "svc_set", "service"], NO_AES) + ' [$__range])))',
     0, 17, 24, 8,
     rename={"service": "Service", "svc_keys": "Available Keys",
             "svc_set": "msDS-SupportedEncryptionTypes", "Value": "Events"},
@@ -333,7 +350,7 @@ P.append(row(1002, "\u2615 Client-Side Fixes (Java, SAP, appliances)", 33))
 P.append(table(303, "Clients Advertising No AES - The Fix Belongs On The Client",
     "The client machine advertised an encryption type list containing no AES. The service may already be AES-capable; "
     "the negotiation is being dragged down by the client. On Java and SAP hosts, look at krb5.ini.",
-    'sum by (service, client_ip, client_etypes) (count_over_time(' + q(SEL, "ClientAdvertizedEncryptionTypes", ["client_etype", "service", "client_ip"], ' | client_etypes!="" | client_etypes!="-" | client_etypes!~".*AES.*"') + ' [$__range]))',
+    'topk(' + str(TABLE_LIMIT) + ', sum by (service, client_ip, client_etypes) (count_over_time(' + q(SEL, "ClientAdvertizedEncryptionTypes", ["client_etype", "service", "client_ip"], ' | client_etypes!="" | client_etypes!="-" | client_etypes!~".*AES.*"') + ' [$__range])))',
     0, 34, 14, 8,
     rename={"service": "Service", "client_ip": "Client IP",
             "client_etypes": "Advertised Etypes", "Value": "Events"},
@@ -345,7 +362,7 @@ P.append(row(1003, "\U0001F3AB Ticket Failures", 42))
 P.append(table(304, "Failing Now - KDC_ERR_ETYPE_NOTSUPP (0xE)",
     "Already broken today. Invisible in the KDC audit events, and usually masked by an NTLM fallback that makes the "
     "application look healthy while silently downgrading the authentication.",
-    'sum by (service, account, client_ip) (count_over_time(' + q(SEL69, "TicketEncryptionType", ["status", "service", "account", "client_ip"], ' | status="0xe"') + ' [$__range]))',
+    'topk(' + str(TABLE_LIMIT) + ', sum by (service, account, client_ip) (count_over_time(' + q(SEL69, "TicketEncryptionType", ["status", "service", "account", "client_ip"], ' | status="0xe"') + ' [$__range])))',
     0, 43, 24, 8,
     rename={"service": "Service", "account": "Requesting Account",
             "client_ip": "Client IP", "Value": "Failures"},
@@ -353,7 +370,7 @@ P.append(table(304, "Failing Now - KDC_ERR_ETYPE_NOTSUPP (0xE)",
 P.append(table(302, "RC4 Tickets by Service, Account and Client",
     "Every RC4 ticket still being issued, attributed to the requesting account and the client IP that asked for it. "
     "This is the list you work down.",
-    'sum by (service, account, client_ip, etype) (count_over_time(' + q(SEL, "TicketEncryptionType", ["etype", "service", "account", "client_ip"], RC4) + ' [$__range]))',
+    'topk(' + str(TABLE_LIMIT) + ', sum by (service, account, client_ip, etype) (count_over_time(' + q(SEL, "TicketEncryptionType", ["etype", "service", "account", "client_ip"], RC4) + ' [$__range])))',
     0, 51, 24, 9,
     rename={"service": "Service", "account": "Requesting Account", "client_ip": "Client IP",
             "etype": "Ticket Etype", "Value": "Tickets"},

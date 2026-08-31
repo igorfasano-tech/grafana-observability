@@ -507,7 +507,7 @@
         "overrides": []
       },
       "options": {
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
@@ -693,7 +693,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum by (service, svc_keys, svc_set) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"ServiceAvailableKeys\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='ServiceAvailableKeys'>(?P<svc_keys>[^<]*)</Data>` | regexp `<Data Name='ServiceSupportedEncryptionTypes'>(?P<svc_set>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | svc_keys!=\"\" | svc_keys!=\"N/A\" | svc_keys!=\"-\" | svc_keys!~\".*AES.*\" [$__range]))",
+          "expr": "topk(200, sum by (service, svc_keys, svc_set) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"ServiceAvailableKeys\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='ServiceAvailableKeys'>(?P<svc_keys>[^<]*)</Data>` | regexp `<Data Name='ServiceSupportedEncryptionTypes'>(?P<svc_set>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | svc_keys!=\"\" | svc_keys!=\"N/A\" | svc_keys!=\"-\" | svc_keys!~\".*AES.*\" [$__range])))",
           "refId": "A",
           "queryType": "instant",
           "instant": true
@@ -974,7 +974,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum by (service, client_ip, client_etypes) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"ClientAdvertizedEncryptionTypes\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='ClientAdvertizedEncryptionTypes'>(?P<client_etypes>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | regexp `<Data Name='IpAddress'>(?P<client_ip>[^<]*)</Data>` | client_etypes!=\"\" | client_etypes!=\"-\" | client_etypes!~\".*AES.*\" [$__range]))",
+          "expr": "topk(200, sum by (service, client_ip, client_etypes) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"ClientAdvertizedEncryptionTypes\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='ClientAdvertizedEncryptionTypes'>(?P<client_etypes>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | regexp `<Data Name='IpAddress'>(?P<client_ip>[^<]*)</Data>` | client_etypes!=\"\" | client_etypes!=\"-\" | client_etypes!~\".*AES.*\" [$__range])))",
           "refId": "A",
           "queryType": "instant",
           "instant": true
@@ -1110,7 +1110,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum by (service, account, client_ip) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=\"4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='Status'>(?P<status>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | regexp `<Data Name='TargetUserName'>(?P<account>[^<]*)</Data>` | regexp `<Data Name='IpAddress'>(?P<client_ip>[^<]*)</Data>` | status=\"0xe\" [$__range]))",
+          "expr": "topk(200, sum by (service, account, client_ip) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=\"4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='Status'>(?P<status>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | regexp `<Data Name='TargetUserName'>(?P<account>[^<]*)</Data>` | regexp `<Data Name='IpAddress'>(?P<client_ip>[^<]*)</Data>` | status=\"0xe\" [$__range])))",
           "refId": "A",
           "queryType": "instant",
           "instant": true
@@ -1207,7 +1207,7 @@
             "uid": "${DS_LOKI}"
           },
           "editorMode": "code",
-          "expr": "sum by (service, account, client_ip, etype) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | regexp `<Data Name='TargetUserName'>(?P<account>[^<]*)</Data>` | regexp `<Data Name='IpAddress'>(?P<client_ip>[^<]*)</Data>` | etype=~\"0x17|0x18\" [$__range]))",
+          "expr": "topk(200, sum by (service, account, client_ip, etype) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | regexp `<Data Name='TargetUserName'>(?P<account>[^<]*)</Data>` | regexp `<Data Name='IpAddress'>(?P<client_ip>[^<]*)</Data>` | etype=~\"0x17|0x18\" [$__range])))",
           "refId": "A",
           "queryType": "instant",
           "instant": true
@@ -1362,7 +1362,7 @@
         "overrides": []
       },
       "options": {
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
@@ -1427,7 +1427,7 @@
         "overrides": []
       },
       "options": {
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
@@ -1492,7 +1492,7 @@
         "overrides": []
       },
       "options": {
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
@@ -1920,7 +1920,7 @@
         "overrides": []
       },
       "options": {
-        "colorMode": "background",
+        "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",

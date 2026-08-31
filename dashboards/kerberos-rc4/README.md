@@ -12,6 +12,13 @@ stops working.
 This rebuilds the same question as a time series. Remediation stops being an
 argument about a spreadsheet and becomes a number you watch go to zero.
 
+![Overview](screenshots/overview.png)
+
+The numbers in every screenshot here are simulated. The domain is
+`corp.example` and the accounts are invented, because the point of the
+dashboard is that it shows you real account names and those are nobody else's
+business.
+
 ## What it answers
 
 - Who is still receiving RC4 tickets, and on which domain controllers
@@ -58,6 +65,8 @@ clients, no scheduled script, and no CSV anywhere.
 
 ## Reading the results
 
+![The two worklists](screenshots/worklists.png)
+
 The two worklists are deliberately separate, because the remediation is
 different and mixing them wastes a lot of people's time:
 
@@ -75,6 +84,26 @@ empty", "not N/A" and "contains no AES". Without excluding it explicitly,
 `krbtgt` and friends appear on the password-reset worklist. Those are false
 positives, and the kind that gets somebody to reset twelve service accounts for
 nothing.
+
+### What is already broken
+
+![Ticket failures](screenshots/failures.png)
+
+`KDC_ERR_ETYPE_NOTSUPP` means the KDC has already refused. These are not future
+problems, they are today's, and they are usually invisible because the
+application falls back to NTLM and nobody notices until the fallback is closed
+too.
+
+### The domain controllers, and the KDC's own opinion
+
+![Domain controller posture and KDC verdict](screenshots/dc-and-kdc.png)
+
+The bottom half is the part most write-ups skip. `DCSupportedEncryptionTypes`
+tells you which of your own domain controllers still advertise RC4, and events
+201 to 209 are the KDC telling you, in its own words, what it is about to
+refuse. If that row says `not reporting`, see
+[windows/kdc-events.md](windows/kdc-events.md): those events only exist once the
+disablement phase is active, and their absence is not an all-clear.
 
 ## Rebuilding the dashboard
 
