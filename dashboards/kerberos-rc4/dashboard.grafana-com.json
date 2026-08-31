@@ -557,7 +557,7 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
-        "content": "<div style=\"background:#12161c;border:1px solid #262c36;border-radius:10px;padding:20px 22px;font-family:system-ui;height:100%;box-sizing:border-box\"><div style=\"display:flex;align-items:center;gap:9px;margin-bottom:11px\"><span style=\"width:6px;height:6px;border-radius:50%;background:#ff6b6b;flex:0 0 auto\"></span><span style=\"font-size:11px;font-weight:600;letter-spacing:0.9px;text-transform:uppercase;color:#8b949e\">Why this exists</span></div><div style=\"color:#c9d1d9;font-size:12.5px;line-height:1.7\">Microsoft is removing RC4 as the default supported encryption type for AD domain controllers (<b>CVE-2026-20833</b>). Windows Server 2025 DCs already refuse to issue RC4 TGTs.<br/><br/>The documented remediation path is a point-in-time PowerShell audit. A service account that authenticates <b>once a month</b> over RC4 is not in that snapshot, and it breaks the day enforcement lands. RC4 removal is a <b>continuous monitoring</b> problem.</div></div>",
+        "content": "<div style=\"background:#12161c;border:1px solid #262c36;border-radius:10px;padding:20px 22px;font-family:system-ui;height:100%;box-sizing:border-box\"><div style=\"display:flex;align-items:center;gap:9px;margin-bottom:11px\"><span style=\"width:6px;height:6px;border-radius:50%;background:#ff6b6b;flex:0 0 auto\"></span><span style=\"font-size:11px;font-weight:600;letter-spacing:0.9px;text-transform:uppercase;color:#8b949e\">Why this exists</span></div><div style=\"color:#c9d1d9;font-size:12.5px;line-height:1.7\">Microsoft is removing RC4 as the default supported encryption type for AD domain controllers (<b>CVE-2026-20833</b>), because an RC4 service ticket can be taken away and brute-forced offline. Enforcement landed with the July 2026 update.<br/><br/>The documented remediation path is a point-in-time PowerShell audit. A service account that authenticates <b>once a month</b> over RC4 is not in that snapshot, and it breaks the day enforcement lands. RC4 removal is a <b>continuous monitoring</b> problem.</div></div>",
         "mode": "html"
       },
       "targets": []
@@ -1953,7 +1953,7 @@
       "id": 604,
       "type": "stat",
       "title": "Explicit RC4 in DDSET (205)",
-      "description": "Event 205, logged when the KDC service starts and finds RC4 explicitly enabled in DefaultDomainSupportedEncTypes. A configuration finding rather than a live failure, and it survives reboots until somebody changes the value.",
+      "description": "Event 205. RC4 is explicitly enabled in the domain policy DefaultDomainSupportedEncTypes. A configuration finding rather than a failed request, which is why it is counted separately from the per-request warnings.",
       "datasource": {
         "type": "loki",
         "uid": "${DS_LOKI}"

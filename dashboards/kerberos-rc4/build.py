@@ -31,8 +31,9 @@ KERB_IDS = "4768|4769|4771|20[1-9]"
 # read top-down anyway. Anybody with more than 200 distinct offenders is not
 # going to work through row 201 today.
 TABLE_LIMIT = 200
-# 205 is a start-up configuration finding, not a per-request warning, and it
-# gets its own stat. Keeping it out of here stops it double-counting.
+# 205 reports RC4 explicitly enabled in the domain policy rather than a single
+# request that depended on it, so it gets its own stat. Keeping it out of the
+# warnings selector stops the same finding being counted twice.
 KDC_WARN  = '{job="$job", computer=~"$dc", channel="System", event_id=~"201|202|206|207"}'
 KDC_BLOCK = '{job="$job", computer=~"$dc", channel="System", event_id=~"203|204|208|209"}'
 
@@ -235,7 +236,8 @@ def card(accent, emoji, title, tcolor, body):
 
 CARD_WHY = card("#ff6b6b", "&#128737;", "Why this exists", "#ff7b72",
  "Microsoft is removing RC4 as the default supported encryption type for AD domain controllers "
- "(<b>CVE-2026-20833</b>). Windows Server 2025 DCs already refuse to issue RC4 TGTs.<br/><br/>"
+ "(<b>CVE-2026-20833</b>), because an RC4 service ticket can be taken away and brute-forced "
+ "offline. Enforcement landed with the July 2026 update.<br/><br/>"
  "The documented remediation path is a point-in-time PowerShell audit. A service account that "
  "authenticates <b>once a month</b> over RC4 is not in that snapshot, and it breaks the day "
  "enforcement lands. RC4 removal is a <b>continuous monitoring</b> problem.")
@@ -461,9 +463,9 @@ P.append(stat(603, "DCs Reporting the Policy",
     'count(sum by (computer) (count_over_time(' + SELKDC + ' [$__range])))',
     12, 74, 6, 4, NEUT, no_value="0"))
 P.append(stat(604, "Explicit RC4 in DDSET (205)",
-    "Event 205, logged when the KDC service starts and finds RC4 explicitly enabled in "
-    "DefaultDomainSupportedEncTypes. A configuration finding rather than a live failure, and it survives reboots "
-    "until somebody changes the value.",
+    "Event 205. RC4 is explicitly enabled in the domain policy DefaultDomainSupportedEncTypes. "
+    "A configuration finding rather than a failed request, which is why it is counted separately from the "
+    "per-request warnings.",
     'sum(count_over_time(' + '{job="$job", computer=~"$dc", channel="System", event_id="205"}' + ' [$__range]))',
     18, 74, 6, 4, ORNG0, no_value=NODATA, color_mode="value"))
 

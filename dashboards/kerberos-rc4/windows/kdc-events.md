@@ -55,14 +55,14 @@ controller. They are the KDC's own verdict:
 |---|---|
 | 201, 202 | The KDC issued a ticket it will refuse once the next phase lands |
 | 203, 204 | The KDC **refused** a request because of encryption type |
-| 205 | A start-up configuration finding, emitted once per boot, not per request |
+| 205 | RC4 explicitly enabled in the domain policy `DefaultDomainSupportedEncTypes` |
 | 206, 207 | Warnings about accounts or trusts that are not ready |
 | 208, 209 | Refusals related to trusts and referrals |
 
-Note 205. It is a configuration finding at start-up rather than a per-request
-warning, which is why it gets its own panel on the dashboard instead of being
-counted in the warnings total. Counting it with the rest double-counts it and
-makes a single reboot look like a spike.
+Note 205. It reports the domain policy having RC4 explicitly enabled, rather
+than one request that depended on RC4, so counting it alongside the per-request
+warnings inflates a number you are trying to drive to zero. The dashboard gives
+it a panel of its own.
 
 ### Whether your KDC is emitting them at all
 
