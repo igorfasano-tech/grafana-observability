@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Never commit these. Collector configs here use placeholders on purpose.
+*.token
+*.secret
+.env
