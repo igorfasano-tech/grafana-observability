@@ -40,20 +40,6 @@ Relevant to the RC4 deprecation tracked as CVE-2026-20833.
 Only domain controllers need the collector. There is nothing to install on
 clients, no scheduled script, and no CSV anywhere.
 
-## Seeing it first, with simulated data
-
-If you just want to look at it, there is a self-contained demo: a local Loki and
-Grafana with a week of invented Kerberos telemetry, no domain controller
-involved.
-
-```bash
-cd demo
-docker compose up -d
-python3 generate.py
-```
-
-Then <http://localhost:3000>. See [demo/README.md](demo/README.md).
-
 ## Setting it up
 
 1. **Turn the events on.** Kerberos ticket auditing is on by default on a DC,

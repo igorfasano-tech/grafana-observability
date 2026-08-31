@@ -11,3 +11,6 @@ Thumbs.db
 *.token
 *.secret
 .env
+
+# Local screenshot rig. Not part of what anybody else needs.
+demo/

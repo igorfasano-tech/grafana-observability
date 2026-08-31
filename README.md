@@ -30,26 +30,11 @@ dashboards/<name>/
   dashboard.grafana-com.json   the __inputs variant, for the public library
   alloy/                       collector configuration
   windows/ or linux/           anything that has to be turned on at the source
-  demo/                        docker compose, plus a generator for fake data
   screenshots/
 docs/
   conventions.md               how every dashboard here is built
   importing.md                 importing, datasources, and the grafana.com trap
 ```
-
-## Try one without deploying anything
-
-Each dashboard ships a `demo/` with a local Loki and Grafana and a generator
-that invents a week of plausible telemetry. No agent, no server, nothing real.
-
-```bash
-cd dashboards/kerberos-rc4/demo
-docker compose up -d && python3 generate.py
-open http://localhost:3000
-```
-
-It is also how the screenshots in this repository were taken, which is why none
-of them contain a real account name.
 
 ## The dashboards are generated, not hand-edited
 
