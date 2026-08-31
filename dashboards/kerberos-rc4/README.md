@@ -14,11 +14,6 @@ argument about a spreadsheet and becomes a number you watch go to zero.
 
 ![Overview](screenshots/overview.png)
 
-The numbers in every screenshot here are simulated. The domain is
-`corp.example` and the accounts are invented, because the point of the
-dashboard is that it shows you real account names and those are nobody else's
-business.
-
 ## What it answers
 
 - Who is still receiving RC4 tickets, and on which domain controllers
