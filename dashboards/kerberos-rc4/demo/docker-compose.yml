@@ -1,0 +1,47 @@
+# Local Loki and Grafana, preloaded with the dashboard, for screenshots and
+# for trying the queries without touching a real domain controller.
+#
+#   docker compose up -d
+#   python3 generate.py
+#   open http://localhost:3000
+#
+# Nothing here is meant to leave your laptop. Anonymous access is on and the
+# login form is off, on purpose, so the dashboard opens straight away and the
+# screenshots have no user menu in the corner.
+
+services:
+  loki:
+    image: grafana/loki:3.4.2
+    container_name: kerberos-demo-loki
+    command: -config.file=/etc/loki/loki.yaml
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki.yaml:/etc/loki/loki.yaml:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O- http://localhost:3100/ready | grep -q ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  grafana:
+    image: grafana/grafana:11.6.1
+    container_name: kerberos-demo-grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      loki:
+        condition: service_healthy
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_USERS_DEFAULT_THEME: dark
+      GF_FEATURE_TOGGLES_ENABLE: publicDashboards
+      GF_LOG_LEVEL: warn
+      # Opens on the dashboard rather than the home page, which saves a click
+      # every time you restart the stack while tuning a panel.
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/dashboard.json
+    volumes:
+      - ./provisioning:/etc/grafana/provisioning:ro
+      - ../dashboard.json:/var/lib/grafana/dashboards/dashboard.json:ro

@@ -1,0 +1,141 @@
+// =====================================================================
+// Kerberos RC4 Remediation - telemetry collection
+// Grafana Alloy 1.14.x  |  Windows Server 2019 / 2022 / 2025
+//
+// Collects the two event streams that answer "who is still using RC4":
+//   Security 4768 / 4769 / 4771  -> per-ticket encryption type + key material
+//   System   201-209 (KDC)       -> KDC hardening audit warnings
+//
+// Everything the dashboard needs comes from these events. No agent on the
+// clients, no scheduled PowerShell, no CSV.
+// =====================================================================
+
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+// ---------------------------------------------------------------------
+// Security channel - Kerberos ticket events
+//
+// GOTCHA 1: when eventlog_name is set, xpath_query must NOT repeat the
+// channel name. "Security!*[System[...]]" fails with
+// "The specified query is invalid" because eventlog_name already opened
+// the subscription on that channel.
+//
+// GOTCHA 2: exclude_event_message = true drops the rendered English
+// message block. Every field the dashboard parses lives in event_data,
+// and the message is a redundant restatement of it - roughly half the
+// bytes on the wire for zero loss of information.
+// ---------------------------------------------------------------------
+loki.source.windowsevent "kerberos_tickets" {
+  eventlog_name = "Security"
+  xpath_query   = "*[System[(EventID=4768 or EventID=4769 or EventID=4771)]]"
+
+  bookmark_path          = "C:\\ProgramData\\GrafanaLabs\\Alloy\\data\\bookmark_kerberos_security.xml"
+  poll_interval          = "3s"
+  use_incoming_timestamp = true
+  locale                 = 1033
+  exclude_event_message  = true
+
+  labels = {
+    kerberos = "tickets",
+  }
+
+  forward_to = [loki.process.kerberos.receiver]
+}
+
+// ---------------------------------------------------------------------
+// System channel - KDC audit events 201-209
+//
+// These only exist if the KDC is emitting them. See the README: the
+// events are produced by the RC4 disablement phase, not by an audit
+// policy, and there is no channel to switch on.
+//
+// GOTCHA 3: EventID ranges with >= / <= need XML escaping inside the
+// XPath string. Enumerating the IDs avoids the question entirely.
+//
+// GOTCHA 5: the provider name. KB5073381 documents these as
+// "Event Log: System, Event Source: Kdcsvc", and that is the name that
+// appears in the event XML on the builds I have checked. The modern ETW
+// provider "Microsoft-Windows-Kerberos-Key-Distribution-Center" also
+// exists, and filtering on it alone silently matches nothing. Matching
+// both names costs nothing and survives either spelling.
+// ---------------------------------------------------------------------
+loki.source.windowsevent "kerberos_kdc" {
+  eventlog_name = "System"
+  xpath_query   = "*[System[(Provider[@Name='Kdcsvc'] or Provider[@Name='Microsoft-Windows-Kerberos-Key-Distribution-Center']) and (EventID=201 or EventID=202 or EventID=203 or EventID=204 or EventID=205 or EventID=206 or EventID=207 or EventID=208 or EventID=209)]]"
+
+  bookmark_path          = "C:\\ProgramData\\GrafanaLabs\\Alloy\\data\\bookmark_kerberos_kdc.xml"
+  poll_interval          = "10s"
+  use_incoming_timestamp = true
+  locale                 = 1033
+
+  // NOTE: no exclude_event_message here, unlike the Security block above.
+  // For these events the rendered message IS the payload: it names the
+  // account and the service. They are also rare, so the bytes are free.
+
+  labels = {
+    kerberos = "kdc_audit",
+  }
+
+  forward_to = [loki.process.kerberos.receiver]
+}
+
+// ---------------------------------------------------------------------
+// Shared processing
+//
+// GOTCHA 4: stage.labels values must be null (meaning "use the extracted
+// value"), NOT "" - an empty string is taken as a literal empty label.
+//
+// Deliberately NOT promoting account / service / encryption type to
+// labels: those are unbounded and would blow up stream cardinality.
+// They are parsed at query time from event_data instead.
+// ---------------------------------------------------------------------
+loki.process "kerberos" {
+  forward_to = [loki.write.default.receiver]
+
+  stage.json {
+    expressions = {
+      event_id    = "event_id",
+      computer    = "computer",
+      channel     = "channel",
+      timeCreated = "timeCreated",
+    }
+  }
+
+  stage.labels {
+    values = {
+      event_id = null,
+      computer = null,
+      channel  = null,
+    }
+  }
+
+  stage.timestamp {
+    source           = "timeCreated"
+    format           = "2006-01-02T15:04:05.9999999Z07:00"
+    fallback_formats = ["2006-01-02T15:04:05Z07:00", "2006-01-02T15:04:05Z"]
+  }
+}
+
+// ---------------------------------------------------------------------
+// Output
+// ---------------------------------------------------------------------
+loki.write "default" {
+  endpoint {
+    // Self-hosted Loki:
+    url = "http://LOKI_HOST:3100/loki/api/v1/push"
+
+    // Grafana Cloud - replace and uncomment:
+    // url = "https://logs-prod-XXX.grafana.net/loki/api/v1/push"
+    // basic_auth {
+    //   username = "YOUR_LOKI_USER_ID"
+    //   password = sys.env("GRAFANA_CLOUD_TOKEN")
+    // }
+  }
+
+  external_labels = {
+    job = "windows_kerberos",
+  }
+}

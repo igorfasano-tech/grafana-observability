@@ -64,6 +64,32 @@ Parse those at query time instead. It is slower per query and dramatically
 cheaper to run, and the queries in this repository are written that way
 throughout.
 
+## Counting distinct values is the expensive one
+
+`count(sum by (something) (...))` is how you count distinct values in LogQL, and
+it is a trap. The inner aggregation has to materialise one series per distinct
+value before the outer `count()` can reduce it to a number, so a panel counting
+distinct service principals across a directory fails with:
+
+```
+maximum number of series (500) reached for a single query
+```
+
+That is `max_query_series`. It defaults to 500 and it is not raisable on Grafana
+Cloud. There is no cheap distinct-count in LogQL to fall back on, no
+approximation function, nothing.
+
+So only count distinct values that are **bounded by the question**: domain
+controllers, or accounts that appear on a remediation worklist, which is small
+by the time somebody is looking at it. Counting distinct anything across the
+whole estate will work in a lab and fail in production, which is the worst
+possible time for it to fail.
+
+When you catch yourself wanting an unbounded distinct count, ask what the panel
+is really for. Usually it is a health check, and `sum(bytes_over_time(...))` or
+`sum(count_over_time(...))` answers it in one series and tells you something
+about the bill as well.
+
 ## Stat panels aggregate, timeseries do not
 
 - Stat: `sum(count_over_time(... [$__range]))`. Without `sum()` you get one

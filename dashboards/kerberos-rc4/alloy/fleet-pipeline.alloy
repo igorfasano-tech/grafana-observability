@@ -1,0 +1,144 @@
+// =====================================================================
+// Kerberos RC4 - Grafana Fleet Management pipeline
+//
+// Same collection as kerberos-rc4.alloy, shaped for Fleet Management:
+// you push this once and every collector matching the pipeline's
+// matcher picks it up on its next remotecfg poll. No visiting hosts.
+//
+// Suggested matcher:   role="domain_controller"
+// Suggested name:      kerberos_rc4          (see gotcha 2)
+//
+// Read the gotchas. All five cost me an afternoon each.
+// =====================================================================
+
+// ---------------------------------------------------------------------
+// GOTCHA 1  xpath_query must not repeat the channel name
+//
+//   eventlog_name = "Security"
+//   xpath_query   = "Security!*[System[...]]"   <-- FAILS
+//
+// "The specified query is invalid". The Windows Event Log API reads
+// "Security!" as a channel selector, and eventlog_name has already
+// opened the subscription on that channel. Specify it once.
+//
+// GOTCHA 2  pipeline names must be valid Alloy identifiers
+//
+//   kerberos_rc4    OK
+//   kerberos-rc4    "pipeline name must be valid alloy identifier"
+//
+// Underscores yes, hyphens no. This applies to the pipeline name in
+// Fleet Management, not just to component labels.
+//
+// GOTCHA 3  the CreatePipeline API body has to be wrapped
+//
+//   {"name": "...", "contents": "..."}              -> "pipeline is missing"
+//   {"pipeline": {"name": "...", "contents": "..."}} -> works
+//
+// GOTCHA 4  UpdatePipeline is a full replacement, not a patch
+//
+// Anything you leave out is removed, including the matchers and the
+// enabled flag. Fetch the current pipeline, change the one field, send
+// the whole object back.
+//
+// GOTCHA 5  one bad pipeline blocks the merged config
+//
+// Fleet Management merges every matching pipeline into a single config
+// per collector. If one of them fails to parse, the collector keeps
+// running its last good config and quietly stops picking up changes to
+// all the others. When a pipeline edit "does nothing", check whether a
+// different pipeline on the same matcher is broken.
+// ---------------------------------------------------------------------
+
+loki.source.windowsevent "kerberos_tickets" {
+  eventlog_name = "Security"
+  xpath_query   = "*[System[(EventID=4768 or EventID=4769 or EventID=4771)]]"
+
+  bookmark_path          = "C:\\ProgramData\\GrafanaLabs\\Alloy\\data\\bookmark_kerberos_security.xml"
+  poll_interval          = "3s"
+  use_incoming_timestamp = true
+  locale                 = 1033
+
+  // Halves the bytes on the wire. Every field the dashboard reads lives
+  // in event_data; the rendered message just restates it in English.
+  // On a busy DC the Security channel is measured in gigabytes a day,
+  // so this is the difference between affordable and not.
+  exclude_event_message = true
+
+  labels = { kerberos = "tickets" }
+
+  forward_to = [loki.process.kerberos.receiver]
+}
+
+loki.source.windowsevent "kerberos_kdc" {
+  eventlog_name = "System"
+
+  // Both provider spellings. KB5073381 documents these as source
+  // "Kdcsvc"; the modern ETW provider name also exists. Filtering on
+  // one of them alone silently matches nothing, which looks exactly
+  // like "we have no findings".
+  xpath_query = "*[System[(Provider[@Name='Kdcsvc'] or Provider[@Name='Microsoft-Windows-Kerberos-Key-Distribution-Center']) and (EventID=201 or EventID=202 or EventID=203 or EventID=204 or EventID=205 or EventID=206 or EventID=207 or EventID=208 or EventID=209)]]"
+
+  bookmark_path          = "C:\\ProgramData\\GrafanaLabs\\Alloy\\data\\bookmark_kerberos_kdc.xml"
+  poll_interval          = "10s"
+  use_incoming_timestamp = true
+  locale                 = 1033
+
+  // Message kept on purpose: for these events it names the account and
+  // the service, and they are rare enough that the bytes are free.
+
+  labels = { kerberos = "kdc_audit" }
+
+  forward_to = [loki.process.kerberos.receiver]
+}
+
+loki.process "kerberos" {
+  forward_to = [loki.write.default.receiver]
+
+  stage.json {
+    expressions = {
+      event_id    = "event_id",
+      computer    = "computer",
+      channel     = "channel",
+      timeCreated = "timeCreated",
+    }
+  }
+
+  // GOTCHA 6  values must be null, not ""
+  //
+  // null means "use the extracted value". An empty string is taken as a
+  // literal empty label, and {event_id="4768"} then matches nothing
+  // while the data sits there in Loki looking fine.
+  stage.labels {
+    values = {
+      event_id = null,
+      computer = null,
+      channel  = null,
+    }
+  }
+
+  stage.timestamp {
+    source           = "timeCreated"
+    format           = "2006-01-02T15:04:05.9999999Z07:00"
+    fallback_formats = ["2006-01-02T15:04:05Z07:00", "2006-01-02T15:04:05Z"]
+  }
+}
+
+loki.write "default" {
+  endpoint {
+    url = "https://logs-prod-XXX.grafana.net/loki/api/v1/push"
+
+    basic_auth {
+      username = "YOUR_LOKI_USER_ID"
+
+      // Do NOT paste the token inline here. A Fleet Management pipeline
+      // body is readable by anyone holding fleet-management:read, which
+      // is a much wider group than the people you would hand a write
+      // token to. Use a file the collector reads at startup.
+      password_file = "C:\\ProgramData\\GrafanaLabs\\Alloy\\gc-token"
+    }
+  }
+
+  external_labels = {
+    job = "windows_kerberos",
+  }
+}

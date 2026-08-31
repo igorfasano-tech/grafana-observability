@@ -1,0 +1,2444 @@
+{
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "11.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "loki",
+      "name": "Loki",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "logs",
+      "name": "Logs",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "text",
+      "name": "Text",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Continuous Kerberos RC4 exposure tracking for Active Directory, built on Windows Security events 4768 and 4769 plus the Kdcsvc KDC events 201-209 from the System log, collected by Grafana Alloy into Loki. Answers who is still receiving RC4 tickets, which service accounts hold no AES key material, which clients advertise no AES, which ticket requests already fail with KDC_ERR_ETYPE_NOTSUPP, and which domain controllers still advertise RC4, and what the KDC itself is warning about or already refusing - continuously, instead of as a point-in-time PowerShell export. Relevant to the RC4 deprecation tracked as CVE-2026-20833. Replace the YOUR LOGO placeholder in the header panel to brand it.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "id": 999,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "code": {
+          "language": "html",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#0d1117 0%,#161b22 50%,#1a2332 100%);border-radius:12px;padding:16px 28px;border:1px solid #30363d;box-shadow:0 4px 24px rgba(0,0,0,0.4)\"><div style=\"display:flex;align-items:center;gap:20px\"><div id=\"logo-slot\" style=\"display:flex;align-items:center;justify-content:center;height:50px;min-width:130px;border:2px dashed #484f58;border-radius:10px;color:#8b949e;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:0 14px\">Your&nbsp;Logo</div><div style=\"width:1px;height:40px;background:rgba(48,54,61,0.9)\"></div><img src=\"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/120px-Windows_logo_-_2012.svg.png\" alt=\"Windows\" style=\"height:30px;filter:brightness(1.1)\" onerror=\"this.style.display='none'\" /><div><div style=\"font-size:22px;font-weight:700;color:#e6edf3;letter-spacing:0.5px\">Active Directory | Kerberos RC4 Remediation</div><div style=\"font-size:12px;color:#8b949e;margin-top:4px\">CVE-2026-20833 &bull; Security 4768 / 4769 + Kdcsvc 201-209 &bull; continuous RC4 exposure, not a point-in-time export</div></div></div><div style=\"display:flex;gap:16px;align-items:center\"><div style=\"text-align:center;padding:8px 16px;background:rgba(56,139,253,0.1);border:1px solid rgba(56,139,253,0.3);border-radius:8px\"><div style=\"font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:1px\">Source</div><div style=\"font-size:13px;color:#58a6ff;font-weight:600;margin-top:2px\">Grafana Alloy &rarr; Loki</div></div><div style=\"text-align:center;padding:8px 16px;background:rgba(210,153,34,0.1);border:1px solid rgba(210,153,34,0.3);border-radius:8px\"><div style=\"font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:1px\">Version</div><div style=\"font-size:13px;color:#d29922;font-weight:600;margin-top:2px\">1.0</div></div><div style=\"text-align:center;padding:8px 16px;background:rgba(63,185,80,0.1);border:1px solid rgba(63,185,80,0.3);border-radius:8px\"><div style=\"font-size:10px;color:#8b949e;text-transform:uppercase;letter-spacing:1px\">Author</div><div style=\"font-size:13px;color:#3fb950;font-weight:600;margin-top:2px\">Your&nbsp;Name</div></div></div></div>",
+        "mode": "html"
+      },
+      "targets": []
+    },
+    {
+      "id": 1000,
+      "type": "row",
+      "title": "📊 Overview",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "panels": []
+    },
+    {
+      "id": 101,
+      "type": "stat",
+      "title": "RC4 Tickets Issued",
+      "description": "Tickets the KDC still encrypted with RC4 (0x17 / 0x18). Target is zero.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 5
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none",
+          "noValue": "not reporting"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | etype=~\"0x17|0x18\" [$__range]))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 102,
+      "type": "stat",
+      "title": "Accounts Using RC4",
+      "description": "Distinct requesting accounts that received at least one RC4 ticket in range. Counting distinct values needs one series per account, so on a large estate at the start of remediation this can hit Loki max_query_series (500 by default). Narrow the range if it does.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 5
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none",
+          "noValue": "not reporting"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "count(sum by (account) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | regexp `<Data Name='TargetUserName'>(?P<account>[^<]*)</Data>` | etype=~\"0x17|0x18\" [$__range])))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 103,
+      "type": "stat",
+      "title": "Services Without AES Keys",
+      "description": "Distinct services whose Available Keys field holds no AES key material. Remediation is a password reset.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 5
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none",
+          "noValue": "not reporting"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "count(sum by (service) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"ServiceAvailableKeys\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='ServiceAvailableKeys'>(?P<svc_keys>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | svc_keys!=\"\" | svc_keys!=\"N/A\" | svc_keys!=\"-\" | svc_keys!~\".*AES.*\" [$__range])))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 104,
+      "type": "stat",
+      "title": "ETYPE_NOTSUPP Failures",
+      "description": "Event 4769 with failure code 0xE - client and service could not agree an encryption type. These are already broken.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 5
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none",
+          "noValue": "not reporting"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", event_id=\"4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='Status'>(?P<status>[^<]*)</Data>` | status=\"0xe\" [$__range]))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 105,
+      "type": "stat",
+      "title": "AES Adoption",
+      "description": "Share of issued tickets using AES128 or AES256, out of all tickets that produced an encryption type. Target is 100%.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 5
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 95
+              },
+              {
+                "color": "green",
+                "value": 99.9
+              }
+            ]
+          },
+          "unit": "percent",
+          "noValue": "not reporting"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | etype=~\"0x11|0x12\" [$__range])) / sum(count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | etype!=\"\" | etype!=\"0xffffffff\" [$__range])) * 100",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 106,
+      "type": "stat",
+      "title": "Domain Controllers Reporting",
+      "description": "Collection health. Compare against the number of DCs you expect to be shipping events - a drop here means blind spots, not good news.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 5
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none",
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "count(sum by (computer) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} [$__range])))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 9
+      },
+      "options": {
+        "code": {
+          "language": "html",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"background:#12161c;border:1px solid #262c36;border-radius:10px;padding:20px 22px;font-family:system-ui;height:100%;box-sizing:border-box\"><div style=\"display:flex;align-items:center;gap:9px;margin-bottom:11px\"><span style=\"width:6px;height:6px;border-radius:50%;background:#ff6b6b;flex:0 0 auto\"></span><span style=\"font-size:11px;font-weight:600;letter-spacing:0.9px;text-transform:uppercase;color:#8b949e\">Why this exists</span></div><div style=\"color:#c9d1d9;font-size:12.5px;line-height:1.7\">Microsoft is removing RC4 as the default supported encryption type for AD domain controllers (<b>CVE-2026-20833</b>). Windows Server 2025 DCs already refuse to issue RC4 TGTs.<br/><br/>The documented remediation path is a point-in-time PowerShell audit. A service account that authenticates <b>once a month</b> over RC4 is not in that snapshot, and it breaks the day enforcement lands. RC4 removal is a <b>continuous monitoring</b> problem.</div></div>",
+        "mode": "html"
+      },
+      "targets": []
+    },
+    {
+      "id": 2,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 9
+      },
+      "options": {
+        "code": {
+          "language": "html",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"background:#12161c;border:1px solid #262c36;border-radius:10px;padding:20px 22px;font-family:system-ui;height:100%;box-sizing:border-box\"><div style=\"display:flex;align-items:center;gap:9px;margin-bottom:11px\"><span style=\"width:6px;height:6px;border-radius:50%;background:#d29922;flex:0 0 auto\"></span><span style=\"font-size:11px;font-weight:600;letter-spacing:0.9px;text-transform:uppercase;color:#8b949e\">Reading encryption types</span></div><div style=\"color:#c9d1d9;font-size:12.5px;line-height:1.7\"><code>0x12</code> AES256-CTS-HMAC-SHA1-96, good<br/><code>0x11</code> AES128-CTS-HMAC-SHA1-96, good<br/><code>0x17</code> RC4-HMAC, <b style='color:#f85149'>remove</b><br/><code>0x18</code> RC4-HMAC-EXP, <b style='color:#f85149'>remove</b><br/><code>0x1</code> / <code>0x3</code> DES, <b style='color:#f85149'>remove</b><br/><code>0xffffffff</code> no ticket issued (request failed)<br/><br/><b>Not the same thing</b> as the <code>msDS-SupportedEncryptionTypes</code> bitmask, where <code>0x18</code> means AES128 plus AES256, the opposite meaning.</div></div>",
+        "mode": "html"
+      },
+      "targets": []
+    },
+    {
+      "id": 3,
+      "type": "text",
+      "title": "",
+      "transparent": true,
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 9
+      },
+      "options": {
+        "code": {
+          "language": "html",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"background:#12161c;border:1px solid #262c36;border-radius:10px;padding:20px 22px;font-family:system-ui;height:100%;box-sizing:border-box\"><div style=\"display:flex;align-items:center;gap:9px;margin-bottom:11px\"><span style=\"width:6px;height:6px;border-radius:50%;background:#58a6ff;flex:0 0 auto\"></span><span style=\"font-size:11px;font-weight:600;letter-spacing:0.9px;text-transform:uppercase;color:#8b949e\">Where the data comes from</span></div><div style=\"color:#c9d1d9;font-size:12.5px;line-height:1.7\">A single stream: Windows Security events <b>4768</b> (TGT) and <b>4769</b> (service ticket), collected by <b>Grafana Alloy</b> and stored in <b>Loki</b>.<br/><br/>Since the November 2022 updates, these events carry <code>ServiceAvailableKeys</code>, <code>ServiceSupportedEncryptionTypes</code>, <code>ClientAdvertizedEncryptionTypes</code> and <code>DCSupportedEncryptionTypes</code>, enough to answer every question below from <b>one</b> datasource, with no agent on the clients and no scheduled script.</div></div>",
+        "mode": "html"
+      },
+      "targets": []
+    },
+    {
+      "id": 1001,
+      "type": "row",
+      "title": "🔑 Service Accounts and Key Material",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "panels": []
+    },
+    {
+      "id": 301,
+      "type": "table",
+      "title": "Services Without AES Key Material - Remediation Worklist",
+      "description": "One row equals one account to fix. Available Keys with no AES entry means the account cannot negotiate AES at all. Remediation is a password reset to generate AES keys, then msDS-SupportedEncryptionTypes = 24. An empty table is the healthy state.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Events"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (service, svc_keys, svc_set) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"ServiceAvailableKeys\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='ServiceAvailableKeys'>(?P<svc_keys>[^<]*)</Data>` | regexp `<Data Name='ServiceSupportedEncryptionTypes'>(?P<svc_set>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | svc_keys!=\"\" | svc_keys!=\"N/A\" | svc_keys!=\"-\" | svc_keys!~\".*AES.*\" [$__range]))",
+          "refId": "A",
+          "queryType": "instant",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "service": 0,
+              "svc_keys": 1,
+              "svc_set": 2,
+              "Value #A": 3,
+              "Value": 4
+            },
+            "renameByName": {
+              "service": "Service",
+              "svc_keys": "Available Keys",
+              "svc_set": "msDS-SupportedEncryptionTypes",
+              "Value": "Events",
+              "Value #A": "Events"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 201,
+      "type": "timeseries",
+      "title": "Tickets by Encryption Family",
+      "description": "Stacked ticket volume by encryption family. The RC4 band reaching zero and staying there is the definition of done.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 25
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 70,
+            "gradientMode": "none",
+            "lineWidth": 0,
+            "pointSize": 5,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            }
+          },
+          "min": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | etype=~\"0x11|0x12\" [$__interval]))",
+          "refId": "A",
+          "queryType": "range",
+          "legendFormat": "AES (0x11 / 0x12)"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | etype=~\"0x17|0x18\" [$__interval]))",
+          "refId": "B",
+          "queryType": "range",
+          "legendFormat": "RC4 (0x17 / 0x18)"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | etype=~\"0x1|0x3\" [$__interval]))",
+          "refId": "C",
+          "queryType": "range",
+          "legendFormat": "DES (0x1 / 0x3)"
+        },
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | etype=\"0xffffffff\" [$__interval]))",
+          "refId": "D",
+          "queryType": "range",
+          "legendFormat": "No ticket issued"
+        }
+      ]
+    },
+    {
+      "id": 202,
+      "type": "timeseries",
+      "title": "RC4 Tickets by Domain Controller",
+      "description": "Which DCs are still serving RC4. Often a single site or one legacy application server is behind the whole number.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 25
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 70,
+            "gradientMode": "none",
+            "lineWidth": 0,
+            "pointSize": 5,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            }
+          },
+          "min": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (computer) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | etype=~\"0x17|0x18\" [$__interval]))",
+          "refId": "A",
+          "queryType": "range",
+          "legendFormat": "{{computer}}"
+        }
+      ]
+    },
+    {
+      "id": 1002,
+      "type": "row",
+      "title": "☕ Client-Side Fixes (Java, SAP, appliances)",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 33
+      },
+      "panels": []
+    },
+    {
+      "id": 303,
+      "type": "table",
+      "title": "Clients Advertising No AES - The Fix Belongs On The Client",
+      "description": "The client machine advertised an encryption type list containing no AES. The service may already be AES-capable; the negotiation is being dragged down by the client. On Java and SAP hosts, look at krb5.ini.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 14,
+        "x": 0,
+        "y": 34
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Events"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (service, client_ip, client_etypes) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"ClientAdvertizedEncryptionTypes\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='ClientAdvertizedEncryptionTypes'>(?P<client_etypes>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | regexp `<Data Name='IpAddress'>(?P<client_ip>[^<]*)</Data>` | client_etypes!=\"\" | client_etypes!=\"-\" | client_etypes!~\".*AES.*\" [$__range]))",
+          "refId": "A",
+          "queryType": "instant",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "service": 0,
+              "client_ip": 1,
+              "client_etypes": 2,
+              "Value #A": 3,
+              "Value": 4
+            },
+            "renameByName": {
+              "service": "Service",
+              "client_ip": "Client IP",
+              "client_etypes": "Advertised Etypes",
+              "Value": "Events",
+              "Value #A": "Events"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "text",
+      "title": "",
+      "transparent": false,
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Dashboard --"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 14,
+        "y": 34
+      },
+      "options": {
+        "code": {
+          "language": "html",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"background:#12161c;border:1px solid #262c36;border-radius:10px;padding:20px 22px;font-family:system-ui;height:100%;box-sizing:border-box\"><div style=\"display:flex;align-items:center;gap:9px;margin-bottom:11px\"><span style=\"width:6px;height:6px;border-radius:50%;background:#3fb950;flex:0 0 auto\"></span><span style=\"font-size:11px;font-weight:600;letter-spacing:0.9px;text-transform:uppercase;color:#8b949e\">Remediation guide - one object at a time</span></div><div style=\"color:#c9d1d9;font-size:12.5px;line-height:1.7\"><b style='color:#f85149'>No AES keys</b> (Available Keys shows RC4 only): the account physically cannot do AES &rarr; <b>reset the account password</b> to generate AES key material. The password value does not have to change. Then set <code>msDS-SupportedEncryptionTypes = 24</code> (<code>0x18</code>).<br/><br/><b style='color:#d29922'>Client negotiating RC4</b>: the service already has AES; the listed client IPs advertise no AES &rarr; enable AES on those clients via GPO <i>Network security: Configure encryption types allowed for Kerberos</i>. On Java and SAP hosts the cause is <code>C:\\Windows\\krb5.ini</code> carrying <code>rc4-hmac</code> in <code>default_tkt_enctypes</code>; the JVM reads it at startup, so <b>restart the service</b> after editing.<br/><br/><b style='color:#58a6ff'>DC posture</b>: once dependent objects are clean, set <code>DefaultDomainSupportedEncTypes = 0x18</code> on the KDC. A service that genuinely needs RC4 gets a scoped <code>msDS-SET = 0x24</code> instead.<br/><br/><span style='color:#8b949e'>Failure signature after enforcement: <code>KRB_AP_ERR 0xE KDC_ERR_ETYPE_NOTSUPP</code>, <code>klist 0xc00002fd</code>.</span></div></div>",
+        "mode": "html"
+      },
+      "targets": []
+    },
+    {
+      "id": 1003,
+      "type": "row",
+      "title": "🎫 Ticket Failures",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 42
+      },
+      "panels": []
+    },
+    {
+      "id": 304,
+      "type": "table",
+      "title": "Failing Now - KDC_ERR_ETYPE_NOTSUPP (0xE)",
+      "description": "Already broken today. Invisible in the KDC audit events, and usually masked by an NTLM fallback that makes the application look healthy while silently downgrading the authentication.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Failures"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (service, account, client_ip) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=\"4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='Status'>(?P<status>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | regexp `<Data Name='TargetUserName'>(?P<account>[^<]*)</Data>` | regexp `<Data Name='IpAddress'>(?P<client_ip>[^<]*)</Data>` | status=\"0xe\" [$__range]))",
+          "refId": "A",
+          "queryType": "instant",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "service": 0,
+              "account": 1,
+              "client_ip": 2,
+              "Value #A": 3,
+              "Value": 4
+            },
+            "renameByName": {
+              "service": "Service",
+              "account": "Requesting Account",
+              "client_ip": "Client IP",
+              "Value": "Failures",
+              "Value #A": "Failures"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 302,
+      "type": "table",
+      "title": "RC4 Tickets by Service, Account and Client",
+      "description": "Every RC4 ticket still being issued, attributed to the requesting account and the client IP that asked for it. This is the list you work down.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 51
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Tickets"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (service, account, client_ip, etype) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | regexp `<Data Name='ServiceName'>(?P<service>[^<]*)</Data>` | regexp `<Data Name='TargetUserName'>(?P<account>[^<]*)</Data>` | regexp `<Data Name='IpAddress'>(?P<client_ip>[^<]*)</Data>` | etype=~\"0x17|0x18\" [$__range]))",
+          "refId": "A",
+          "queryType": "instant",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "service": 0,
+              "account": 1,
+              "client_ip": 2,
+              "etype": 3,
+              "Value #A": 4,
+              "Value": 5
+            },
+            "renameByName": {
+              "service": "Service",
+              "account": "Requesting Account",
+              "client_ip": "Client IP",
+              "etype": "Ticket Etype",
+              "Value": "Tickets",
+              "Value #A": "Tickets"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 1004,
+      "type": "row",
+      "title": "🖥 Domain Controller Posture",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 60
+      },
+      "panels": []
+    },
+    {
+      "id": 401,
+      "type": "stat",
+      "title": "DCs Advertising RC4",
+      "description": "Domain controllers whose DCSupportedEncryptionTypes still includes RC4. Target after cleanup is 0x18 (AES only).",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 61
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none",
+          "noValue": "not reporting"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "count(sum by (computer) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"DCSupportedEncryptionTypes\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='DCSupportedEncryptionTypes'>(?P<dc_set>[^<]*)</Data>` | dc_set!=\"-\" | dc_set=~\".*RC4.*\" [$__range])))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 402,
+      "type": "stat",
+      "title": "Ticket Events Collected",
+      "description": "Total 4768 / 4769 events ingested in range. A sudden drop usually means a broken bookmark or a stopped collector, not a quiet estate.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 61
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short",
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} [$__range]))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 403,
+      "type": "stat",
+      "title": "Telemetry Ingested",
+      "description": "Bytes of Kerberos event data ingested in range. Watch this before widening the collection: the Security channel on a busy domain controller is measured in gigabytes a day, which is why the collector drops the rendered message.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 61
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes",
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(bytes_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} [$__range]))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 404,
+      "type": "stat",
+      "title": "Pre-Auth Failures (4771)",
+      "description": "Kerberos pre-authentication failures. Not RC4-specific, but a spike here right after an enforcement change is the first symptom.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 61
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short",
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", event_id=\"4771\"} [$__range]))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 405,
+      "type": "table",
+      "title": "DC Encryption Posture - DCSupportedEncryptionTypes",
+      "description": "What each domain controller reports as its own supported encryption types, read straight from the ticket events. Anything containing RC4 or DES is a DC still advertising the weak ciphers.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 14,
+        "x": 0,
+        "y": 65
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DCSupportedEncryptionTypes"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "regex",
+                    "options": {
+                      "pattern": ".*(RC4|DES).*",
+                      "result": {
+                        "color": "red",
+                        "index": 0
+                      }
+                    }
+                  },
+                  {
+                    "type": "regex",
+                    "options": {
+                      "pattern": "0x18.*",
+                      "result": {
+                        "color": "green",
+                        "index": 1
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Events"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (computer, dc_set) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"DCSupportedEncryptionTypes\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='DCSupportedEncryptionTypes'>(?P<dc_set>[^<]*)</Data>` | dc_set!=\"\" | dc_set!=\"-\" [$__range]))",
+          "refId": "A",
+          "queryType": "instant",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "computer": 0,
+              "dc_set": 1,
+              "Value #A": 2,
+              "Value": 3
+            },
+            "renameByName": {
+              "computer": "Domain Controller",
+              "dc_set": "DCSupportedEncryptionTypes",
+              "Value": "Events",
+              "Value #A": "Events"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 406,
+      "type": "timeseries",
+      "title": "Pre-Auth Failures by Domain Controller",
+      "description": "Event 4771 over time, per DC. Watch this during and after any encryption-type enforcement change.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 14,
+        "y": 65
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 70,
+            "gradientMode": "none",
+            "lineWidth": 0,
+            "pointSize": 5,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            }
+          },
+          "min": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (computer) (count_over_time({job=\"$job\", computer=~\"$dc\", event_id=\"4771\"} [$__interval]))",
+          "refId": "A",
+          "queryType": "range",
+          "legendFormat": "{{computer}}"
+        }
+      ]
+    },
+    {
+      "id": 1005,
+      "type": "row",
+      "title": "🚦 KDC Verdict - Kdcsvc 201-209",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 73
+      },
+      "panels": []
+    },
+    {
+      "id": 601,
+      "type": "stat",
+      "title": "Requests Blocked by the KDC",
+      "description": "Events 203 / 204 / 208 / 209. The KDC refused to issue a ticket because of the RC4 policy. Every one of these is an authentication that failed, so this is the number that wakes people up.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 74
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none",
+          "noValue": "not reporting"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", channel=\"System\", event_id=~\"203|204|208|209\"} [$__range]))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 602,
+      "type": "stat",
+      "title": "RC4 Dependencies Warned",
+      "description": "Events 201 / 202 / 206 / 207. The KDC still issued the ticket, but flagged the request as depending on RC4. This is your remediation backlog while the phase is still audit.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 74
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none",
+          "noValue": "not reporting"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", channel=\"System\", event_id=~\"201|202|206|207\"} [$__range]))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 603,
+      "type": "stat",
+      "title": "DCs Reporting the Policy",
+      "description": "Domain controllers that emitted any 201-209 event in range. If this is lower than your DC count, the rest are either not collected or not running the disablement phase, and their silence means nothing.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 74
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none",
+          "noValue": "0"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "count(sum by (computer) (count_over_time({job=\"$job\", computer=~\"$dc\", channel=\"System\", event_id=~\"20[1-9]\"} [$__range])))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 604,
+      "type": "stat",
+      "title": "Explicit RC4 in DDSET (205)",
+      "description": "Event 205, logged when the KDC service starts and finds RC4 explicitly enabled in DefaultDomainSupportedEncTypes. A configuration finding rather than a live failure, and it survives reboots until somebody changes the value.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 74
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "orange",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none",
+          "noValue": "not reporting"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$job\", computer=~\"$dc\", channel=\"System\", event_id=\"205\"} [$__range]))",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 605,
+      "type": "timeseries",
+      "title": "KDC Events by ID",
+      "description": "Warnings and blocks over time. During a migration the shape you want is the warning bands falling to zero before you move the phase to enforcement, and the block bands never appearing at all.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 78
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 70,
+            "gradientMode": "none",
+            "lineWidth": 0,
+            "pointSize": 5,
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            }
+          },
+          "min": 0,
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (event_id) (count_over_time({job=\"$job\", computer=~\"$dc\", channel=\"System\", event_id=~\"20[1-9]\"} [$__interval]))",
+          "refId": "A",
+          "queryType": "range",
+          "legendFormat": "{{event_id}}"
+        }
+      ]
+    },
+    {
+      "id": 606,
+      "type": "table",
+      "title": "KDC Verdict by Event and Domain Controller",
+      "description": "What each domain controller is reporting, decoded. Blocks in red are already failing. Warnings in orange are what will fail when the phase moves to enforcement.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 78
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "inspect": false
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Event"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "type": "value",
+                    "options": {
+                      "201": {
+                        "text": "201 warn - client offers only RC4, no explicit config",
+                        "color": "orange",
+                        "index": 0
+                      },
+                      "202": {
+                        "text": "202 warn - service has no AES keys, no explicit config",
+                        "color": "orange",
+                        "index": 1
+                      },
+                      "203": {
+                        "text": "203 BLOCK - RC4-only client refused",
+                        "color": "red",
+                        "index": 2
+                      },
+                      "204": {
+                        "text": "204 BLOCK - service without AES keys refused",
+                        "color": "red",
+                        "index": 3
+                      },
+                      "205": {
+                        "text": "205 warn - RC4 explicitly enabled in DDSET policy",
+                        "color": "yellow",
+                        "index": 4
+                      },
+                      "206": {
+                        "text": "206 warn - client offers only RC4, AES-only config",
+                        "color": "orange",
+                        "index": 5
+                      },
+                      "207": {
+                        "text": "207 warn - service has no AES keys, AES-only config",
+                        "color": "orange",
+                        "index": 6
+                      },
+                      "208": {
+                        "text": "208 BLOCK - RC4-only client refused, AES-only config",
+                        "color": "red",
+                        "index": 7
+                      },
+                      "209": {
+                        "text": "209 BLOCK - no AES keys refused, AES-only config",
+                        "color": "red",
+                        "index": 8
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "footer": {
+          "countRows": false,
+          "enablePagination": true,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "Count"
+          }
+        ]
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (event_id, computer) (count_over_time({job=\"$job\", computer=~\"$dc\", channel=\"System\", event_id=~\"20[1-9]\"} [$__range]))",
+          "refId": "A",
+          "queryType": "instant",
+          "instant": true
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {
+              "event_id": 0,
+              "computer": 1,
+              "Value #A": 2,
+              "Value": 3
+            },
+            "renameByName": {
+              "event_id": "Event",
+              "computer": "Domain Controller",
+              "Value": "Count",
+              "Value #A": "Count"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 1006,
+      "type": "row",
+      "title": "🔍 Raw Events",
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 86
+      },
+      "panels": []
+    },
+    {
+      "id": 501,
+      "type": "logs",
+      "title": "Raw RC4 Ticket Events",
+      "description": "The underlying events behind every number above, reduced to the event_data payload. Use this to confirm a finding before you touch an account.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 87
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "{job=\"$job\", computer=~\"$dc\", event_id=~\"4768|4769\"} |= \"TicketEncryptionType\" | json event_data=\"event_data\" | line_format \"{{.event_data}}\" | regexp `<Data Name='TicketEncryptionType'>(?P<etype>[^<]*)</Data>` | etype=~\"0x17|0x18\"",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    },
+    {
+      "id": 502,
+      "type": "logs",
+      "title": "Raw KDC Events",
+      "description": "The Kdcsvc events with their rendered message, which is where the account and service names live. Empty here means the disablement phase is not emitting, so check RC4DefaultDisablementPhase before you conclude anything.",
+      "datasource": {
+        "type": "loki",
+        "uid": "${DS_LOKI}"
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 97
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${DS_LOKI}"
+          },
+          "editorMode": "code",
+          "expr": "{job=\"$job\", computer=~\"$dc\", channel=\"System\", event_id=~\"20[1-9]\"}",
+          "refId": "A",
+          "queryType": "range"
+        }
+      ]
+    }
+  ],
+  "preload": false,
+  "refresh": "5m",
+  "schemaVersion": 39,
+  "tags": [
+    "active-directory",
+    "kerberos",
+    "security",
+    "windows",
+    "alloy",
+    "loki",
+    "rc4"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "datasource": {
+          "type": "loki",
+          "uid": "${DS_LOKI}"
+        },
+        "definition": "label_values({event_id=~\"4768|4769|4771|20[1-9]\"},job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Job",
+        "multi": false,
+        "name": "job",
+        "query": {
+          "label": "job",
+          "refId": "LokiVariableQueryEditor-VariableQuery",
+          "stream": "{event_id=~\"4768|4769|4771|20[1-9]\"}",
+          "type": 1
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "current": {},
+        "datasource": {
+          "type": "loki",
+          "uid": "${DS_LOKI}"
+        },
+        "definition": "label_values({job=\"$job\", event_id=~\"4768|4769|4771|20[1-9]\"},computer)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Domain Controller",
+        "multi": true,
+        "name": "dc",
+        "query": {
+          "label": "computer",
+          "refId": "LokiVariableQueryEditor-VariableQuery",
+          "stream": "{job=\"$job\", event_id=~\"4768|4769|4771|20[1-9]\"}",
+          "type": 1
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Active Directory | Kerberos RC4 Remediation",
+  "uid": "kerberos-rc4-remediation",
+  "version": 1,
+  "weekStart": "",
+  "__inputs": [
+    {
+      "name": "DS_LOKI",
+      "label": "Loki",
+      "description": "Loki datasource holding the Windows events collected by Alloy",
+      "type": "datasource",
+      "pluginId": "loki",
+      "pluginName": "Loki"
+    }
+  ]
+}
