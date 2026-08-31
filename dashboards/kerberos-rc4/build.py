@@ -386,20 +386,21 @@ P.append(stat(402, "Ticket Events Collected",
     "Total 4768 / 4769 events ingested in range. A sudden drop usually means a broken bookmark or a stopped collector, not a quiet estate.",
     'sum(count_over_time(' + SEL + ' [$__range]))',
     6, 61, 6, 4, NEUT, unit="short", no_value="0"))
-# This used to be "Distinct Services Seen", as count(sum by (service) (...)).
-# It broke on a real estate with "maximum number of series (500) reached for a
-# single query". LogQL has no cheap distinct-count: sum by (service) has to
+# Deliberately not a distinct count of services.
+#
+# LogQL has no cheap distinct-count: count(sum by (service) (...)) has to
 # materialise one series per service principal before the outer count() can
-# reduce it, and a directory of any size has thousands. The limit is
-# max_query_series, 500 by default and not raisable on Grafana Cloud.
+# reduce it, and a directory of any size has thousands. Past max_query_series
+# (500 by default, not raisable on Grafana Cloud) the panel returns an error
+# and renders No data.
 #
-# The other count(sum by (...)) panels here survive because what they count is
+# The other count(sum by (...)) panels here are safe because what they count is
 # bounded by definition: domain controllers, or the accounts still on RC4,
-# which is the worklist and therefore small by the time anybody looks.
+# which is the worklist and therefore small.
 #
-# Replaced with ingest volume, which is one series, always, and is a more
-# useful thing to have on a collection-health row anyway. RC4 remediation runs
-# for months and somebody eventually asks what it costs.
+# Ingest volume is one series, always, and is a more useful thing to have on a
+# collection-health row anyway. RC4 remediation runs for months and somebody
+# eventually asks what it costs.
 P.append(stat(403, "Telemetry Ingested",
     "Bytes of Kerberos event data ingested in range. Watch this before widening the collection: the Security channel on a busy domain controller is measured in gigabytes a day, which is why the collector drops the rendered message.",
     'sum(bytes_over_time(' + SEL + ' [$__range]))',
@@ -565,7 +566,7 @@ DASH = {
 #                  grafana.com dashboard library is built around __inputs: it
 #                  reads that block to render the "select your datasource"
 #                  step on import. A dashboard without it is rejected by the
-#                  upload form, silently, which is a fun afternoon.
+#                  upload form, silently, with no error of any kind.
 #
 # Declaring both at once does not work. Grafana prompts for the input and then
 # ignores it, because the variable wins.

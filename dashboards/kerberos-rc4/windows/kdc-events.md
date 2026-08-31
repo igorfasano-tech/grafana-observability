@@ -1,7 +1,7 @@
 # Turning on the events
 
-Two different mechanisms, and only one of them is an audit policy. This trips up
-most people, including me.
+Two different mechanisms, and only one of them is an audit policy. That
+distinction is where most of the confusion comes from.
 
 ## Security 4768, 4769 and 4771
 
@@ -46,7 +46,7 @@ from, so dropping it costs nothing and roughly halves the bytes.
 
 These are **not** an audit policy. There is no subcategory to enable, no channel
 to switch on, and no registry value that turns them on directly. Searching for
-one is a dead end, which is where I lost an afternoon.
+one is a dead end.
 
 The KDC emits them when the RC4 disablement work is active on that domain
 controller. They are the KDC's own verdict:

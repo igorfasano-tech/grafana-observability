@@ -57,7 +57,7 @@ loki.source.windowsevent "kerberos_tickets" {
 //
 // GOTCHA 5: the provider name. KB5073381 documents these as
 // "Event Log: System, Event Source: Kdcsvc", and that is the name that
-// appears in the event XML on the builds I have checked. The modern ETW
+// appears in the event XML. The modern ETW
 // provider "Microsoft-Windows-Kerberos-Key-Distribution-Center" also
 // exists, and filtering on it alone silently matches nothing. Matching
 // both names costs nothing and survives either spelling.

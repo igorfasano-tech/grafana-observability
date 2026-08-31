@@ -7,7 +7,7 @@ it, every panel says "No data", and you spend the afternoon working out which
 exporter, which labels and which scrape config the author had running when they
 took the screenshot. That missing half is the part worth publishing, so
 everything here ships together: the dashboard, the collector configuration, the
-queries, and the pitfalls that cost me time the first time round.
+queries, and the pitfalls that are easy to hit and hard to diagnose.
 
 Everything is written to be reproduced somewhere other than where it was
 written. No environment-specific identifiers, no host names, no topology. If a

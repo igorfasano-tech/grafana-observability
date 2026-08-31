@@ -101,5 +101,5 @@ about the bill as well.
 
 Panel titles and descriptions say what the panel answers, in plain words, for
 somebody who was not in the room when it was built. Section rows carry the
-context. Anything that surprised me while building it goes in a comment in
-`build.py`, not in my head.
+context. Anything non-obvious about a threshold, a filter or a limit goes in a
+comment in `build.py`, next to the line it explains.

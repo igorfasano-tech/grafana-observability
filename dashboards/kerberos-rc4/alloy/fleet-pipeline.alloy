@@ -8,7 +8,7 @@
 // Suggested matcher:   role="domain_controller"
 // Suggested name:      kerberos_rc4          (see gotcha 2)
 //
-// Read the gotchas. All five cost me an afternoon each.
+// Read the gotchas. Each one fails quietly rather than loudly.
 // =====================================================================
 
 // ---------------------------------------------------------------------
