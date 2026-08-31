@@ -51,13 +51,21 @@ one is a dead end.
 The KDC emits them when the RC4 disablement work is active on that domain
 controller. They are the KDC's own verdict:
 
-| Event | Meaning |
-|---|---|
-| 201, 202 | The KDC issued a ticket it will refuse once the next phase lands |
-| 203, 204 | The KDC **refused** a request because of encryption type |
-| 205 | RC4 explicitly enabled in the domain policy `DefaultDomainSupportedEncTypes` |
-| 206, 207 | Warnings about accounts or trusts that are not ready |
-| 208, 209 | Refusals related to trusts and referrals |
+| Event | What the KDC is telling you | |
+|---|---|---|
+| 201 | The client advertised only RC4, and the service has no `msDS-SupportedEncryptionTypes` set | issued |
+| 202 | The service account holds no AES keys, and `msDS-SupportedEncryptionTypes` is not set | issued |
+| 203 | Same condition as 201 | **blocked** |
+| 204 | Same condition as 202 | **blocked** |
+| 205 | RC4 explicitly enabled in the domain policy `DefaultDomainSupportedEncTypes` | |
+| 206 | The service accepts only AES, and the client does not advertise AES | issued |
+| 207 | The service is configured for AES, but the account holds no AES keys | issued |
+| 208 | Same condition as 206 | **blocked** |
+| 209 | Same condition as 207 | **blocked** |
+
+They come in pairs on purpose. Every blocked event has a warning with the same
+underlying cause, so a 203 today is a 201 you did not act on, and the remediation
+is identical. That pairing is the whole reason the audit phase exists.
 
 Note 205. It reports the domain policy having RC4 explicitly enabled, rather
 than one request that depended on RC4, so counting it alongside the per-request

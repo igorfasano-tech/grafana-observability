@@ -273,7 +273,10 @@ CARD_FIX = card("#3fb950", "&#128736;", "Remediation guide - one object at a tim
  "after editing.<br/><br/>"
  "<b style='color:#58a6ff'>DC posture</b>: once dependent objects are clean, set "
  "<code>DefaultDomainSupportedEncTypes = 0x18</code> on the KDC. A service that genuinely needs "
- "RC4 gets a scoped <code>msDS-SET = 0x24</code> instead.<br/><br/>"
+ "RC4 gets a scoped <code>msDS-SET = 0x1C</code> (<code>28</code>, RC4 plus AES128 plus AES256) "
+ "instead, which is the value Microsoft documents for a controlled rollback. Not "
+ "<code>0x24</code>: that is RC4 plus an AES256 session key and no AES long-term keys, which is "
+ "not what you want on an account.<br/><br/>"
  "<span style='color:#8b949e'>Failure signature after enforcement: "
  "<code>KRB_AP_ERR 0xE KDC_ERR_ETYPE_NOTSUPP</code>, <code>klist 0xc00002fd</code>.</span>")
 
